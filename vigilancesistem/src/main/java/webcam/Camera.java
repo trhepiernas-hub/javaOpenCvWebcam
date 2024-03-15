@@ -75,7 +75,7 @@ public class Camera extends JFrame {
                     name = new SimpleDateFormat("yyyy-mm-dd-hh-mm-ss").format(new Date());
                 }
                 // Convertir la imagen a un fichero
-                Imgcodecs.imwrite("imagenes/" + name + ".jpg", image);
+                Imgcodecs.imwrite("./src/main/resources/irudiak/" + name + ".jpg", image);
                 cliked = false;
             }
 
