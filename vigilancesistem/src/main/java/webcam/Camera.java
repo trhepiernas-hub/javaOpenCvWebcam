@@ -14,9 +14,6 @@ public class Camera {
     private VideoCapture capture;
     private Mat image;
 
-    public Camera() {
-    }
-
     /**
      * Metodo honek kamera bat hasi eta irudiak bidaltzen ditu tcp bidez
      */
@@ -38,25 +35,6 @@ public class Camera {
             serverConexion.sendImage(imageData);
 
         }
-    }
-
-    public static void main(String[] args) {
-        // opencv library kargatu
-        ClassLoader classLoader = Camera.class.getClassLoader();
-        String filePath = classLoader.getResource("opencv_java320.dll").getPath();
-        System.load(filePath);
-
-        EventQueue.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                Camera camera = new Camera();
-                // iniciar camara en un nuevo hilo
-                new Thread(() -> {
-                    camera.startCamera();
-                }).start();
-            }
-        });
     }
 
 }
