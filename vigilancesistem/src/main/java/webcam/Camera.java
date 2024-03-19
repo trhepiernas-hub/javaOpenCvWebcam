@@ -1,60 +1,34 @@
 package webcam;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
 
 import java.awt.EventQueue;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class Camera extends JFrame {
+public class Camera{
 
-    private JLabel cameraScreen;
-
-    private JButton btnCapture;
+    ServerConexion serverConexion = new ServerConexion();
 
     private VideoCapture capture;
     private Mat image;
 
-    private boolean cliked = false;
+    byte[] imageData;
+
+    ExecutorService executor = Executors.newFixedThreadPool(5);
 
     public Camera() {
-        // desing UI
-        setLayout(null);
-
-        cameraScreen = new JLabel();
-        cameraScreen.setBounds(0, 0, 640, 480);
-        add(cameraScreen);
-
-        btnCapture = new JButton("Capture");
-        btnCapture.setBounds(300, 480, 80, 40);
-        add(btnCapture);
-
-        btnCapture.addActionListener(e -> {
-            cliked = true;
-        });
-
-        setSize(640, 560);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
     }
 
     // create camera
     public void startCamera() {
         capture = new VideoCapture(0);
         image = new Mat();
-        byte[] imageData;
 
-        ImageIcon icon;
+
         while (true) {
             // read image to matrix
             capture.read(image);
@@ -63,22 +37,14 @@ public class Camera extends JFrame {
             final MatOfByte buf = new MatOfByte();
             Imgcodecs.imencode(".jpg", image, buf);
 
-            imageData = buf.toArray();
-            // add to JLabel
-            icon = new ImageIcon(imageData);
-            cameraScreen.setIcon(icon);
-            // capturar y guardar en fichero
-
-            if (cliked) {
-                String name = JOptionPane.showInputDialog(this, "Mete el nombre de la imagen");
-                if (name == null) {
-                    name = new SimpleDateFormat("yyyy-mm-dd-hh-mm-ss").format(new Date());
-                }
-                // Convertir la imagen a un fichero
-                Imgcodecs.imwrite("./src/main/resources/irudiak/" + name + ".jpg", image);
-                cliked = false;
-            }
-
+            final byte[] imageData = buf.toArray();
+            
+            // send image to server
+            executor.execute(() -> {
+                serverConexion.sendImage(imageData);
+            });
+           
+           
         }
     }
 
