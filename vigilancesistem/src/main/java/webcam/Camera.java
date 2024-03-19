@@ -7,25 +7,22 @@ import org.opencv.videoio.VideoCapture;
 
 import java.awt.EventQueue;
 
-
-public class Camera{
+public class Camera {
 
     ServerConexion serverConexion = new ServerConexion();
 
     private VideoCapture capture;
     private Mat image;
 
-    byte[] imageData;
-
-
     public Camera() {
     }
 
-    // create camera
+    /**
+     * Metodo honek kamera bat hasi eta irudiak bidaltzen ditu tcp bidez
+     */
     public void startCamera() {
         capture = new VideoCapture(0);
         image = new Mat();
-
 
         while (true) {
             // read image to matrix
@@ -36,12 +33,10 @@ public class Camera{
             Imgcodecs.imencode(".jpg", image, buf);
 
             final byte[] imageData = buf.toArray();
-            
+
             // send image to server
             serverConexion.sendImage(imageData);
-           
-           
-           
+
         }
     }
 

@@ -2,6 +2,7 @@ package testServer;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -47,7 +48,7 @@ public class ServerControler {
         frame.setSize(640, 560);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        
+
         try {
             serverSocket = new ServerSocket(SERVER_PORT);
         } catch (Exception e) {
@@ -59,23 +60,30 @@ public class ServerControler {
         try {
             Socket socket = serverSocket.accept();
             InputStream inputStream = socket.getInputStream();
-            inputStream.read(buffer);
-    
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] tempBuffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(tempBuffer)) != -1) {
+                baos.write(tempBuffer, 0, bytesRead);
+            }
+            buffer = baos.toByteArray();
+
             ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
             BufferedImage imagen = ImageIO.read(bais);
-    
+
             if (imagen != null) {
                 return new ImageIcon(imagen);
             } else {
                 System.err.println("La imagen recibida es nula");
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-    
+
     public static void main(String[] args) {
         ServerControler irudiak = new ServerControler();
 
