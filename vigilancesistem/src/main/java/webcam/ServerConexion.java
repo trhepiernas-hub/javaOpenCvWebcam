@@ -5,7 +5,7 @@ import java.net.Socket;
 
 public class ServerConexion {
 
-    final String SERVER_IP = "127.0.0.1";
+    final String SERVER_IP = "192.168.1.130";
     final int SERVER_PORT = 8888;
 
     Socket socket;
