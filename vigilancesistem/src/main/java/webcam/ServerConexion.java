@@ -34,7 +34,7 @@ public class ServerConexion {
             outputStream.write(imageData);
 
             // OutputStream itxi
-            outputStream.close();
+            outputStream.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
