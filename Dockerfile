@@ -19,12 +19,14 @@ RUN cd opencv && \
 
 # Configurar la compilación
 RUN cd opencv/build && \
-    cmake -DBUILD_SHARED_LIBS=OFF ..
+    cmake -DBUILD_SHARED_LIBS=ON ..
 
 # Compilar e instalar OpenCV
 RUN cd opencv/build && \
     make -j4 && \
     make install
+
+COPY ./vigilancesistem/src/main/resources/lib /usr/local/lib
 
 # Copiar el proyecto Maven al contenedor
 COPY ./vigilancesistem /usr/src/app
@@ -35,6 +37,7 @@ WORKDIR /usr/src/app
 # Compilar el proyecto Maven
 RUN mvn package 
 
+
 # Ejecutar el archivo JAR de Java
-# CMD /bin/sh -c "cd /usr/src/app/target && java -jar vigilancesistem-1.0-SNAPSHOT.jar"
-CMD ["/bin/bash"]
+CMD /bin/sh -c "cd /usr/src/app/target && java -jar vigilancesistem-1.0-SNAPSHOT.jar"
+# CMD ["tail", "-f", "/dev/null"]
