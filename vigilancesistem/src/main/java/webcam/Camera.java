@@ -6,8 +6,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
 
 import java.awt.EventQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
 
 public class Camera{
 
@@ -18,7 +17,6 @@ public class Camera{
 
     byte[] imageData;
 
-    ExecutorService executor = Executors.newFixedThreadPool(5);
 
     public Camera() {
     }
@@ -40,9 +38,8 @@ public class Camera{
             final byte[] imageData = buf.toArray();
             
             // send image to server
-            executor.execute(() -> {
-                serverConexion.sendImage(imageData);
-            });
+            serverConexion.sendImage(imageData);
+           
            
            
         }

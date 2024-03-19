@@ -2,8 +2,9 @@ package testServer;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.io.InputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -19,7 +20,7 @@ public class ServerControler {
 
     private byte[] buffer = new byte[65508];
 
-    private DatagramSocket socket;
+    private ServerSocket serverSocket;
 
     private JFrame frame = new JFrame("Server Controler");
 
@@ -48,8 +49,7 @@ public class ServerControler {
         frame.setVisible(true);
         
         try {
-            socket = new DatagramSocket(SERVER_PORT);
-            // Cerrar el socket
+            serverSocket = new ServerSocket(SERVER_PORT);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,15 +57,13 @@ public class ServerControler {
 
     public ImageIcon lortuIrudia() {
         try {
-            DatagramPacket paquete = new DatagramPacket(buffer, buffer.length);
+            Socket socket = serverSocket.accept();
+            InputStream inputStream = socket.getInputStream();
+            inputStream.read(buffer);
     
-            // Ponerse a la escucha y recibir el paquete
-            socket.receive(paquete);
-    
-            ByteArrayInputStream bais = new ByteArrayInputStream(paquete.getData());
+            ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
             BufferedImage imagen = ImageIO.read(bais);
     
-            // Comprobar si la imagen es nula antes de crear el ImageIcon
             if (imagen != null) {
                 return new ImageIcon(imagen);
             } else {
