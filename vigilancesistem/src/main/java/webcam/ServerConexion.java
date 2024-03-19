@@ -10,15 +10,6 @@ public class ServerConexion {
 
     Socket socket;
 
-    public ServerConexion() {
-        try {
-            // Socket bat sortu klasea sortzean
-            socket = new Socket(SERVER_IP, SERVER_PORT);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * Metodo honek irudi bat tcp bidez bidaltzen du
      * 
@@ -27,6 +18,7 @@ public class ServerConexion {
     public void sendImage(byte[] imageData) {
         try {
 
+            socket = new Socket(SERVER_IP, SERVER_PORT);
             // Datuak bidaltzeko OutputStream motako aldagaila sortu
             OutputStream outputStream = socket.getOutputStream();
 
@@ -34,7 +26,7 @@ public class ServerConexion {
             outputStream.write(imageData);
 
             // OutputStream itxi
-            outputStream.flush();
+            outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
