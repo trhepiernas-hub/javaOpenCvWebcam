@@ -1,12 +1,7 @@
 import webcam.Camera;
+import webcam.DependeciLoader;
 
 import java.awt.EventQueue;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.opencv.core.Core;
 
 public class Main {
 
@@ -14,30 +9,16 @@ public class Main {
         try {
             // Sistema erabile komprobatu eta oren arabela clase fitxategia kargatu
             String osName = System.getProperty("os.name").toLowerCase();
-            String opencvName = osName.startsWith("win") ? "opencv_java320.dll" : "libopencv_core.so.4.9.0";
 
-            if (osName.startsWith("win")) {
-
-                // libreria errekurtso bezala kargatu
-                InputStream in = Main.class.getResourceAsStream("/" + opencvName);
-                // artxibo temporala sortu eta libreria bertara kopiatu
-                File tempLib = File.createTempFile("lib", opencvName);
-                try (FileOutputStream out = new FileOutputStream(tempLib)) {
-                    byte[] buffer = new byte[1024];
-                    int readBytes;
-                    while ((readBytes = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, readBytes);
-                    }
-                }
-                // Libreria argatu artxibo temporaltik
-                System.load(tempLib.getAbsolutePath());
+            if ( osName.startsWith("lin")){
+                DependeciLoader.linuxCreateLibrary();
+            } else if (osName.startsWith("win")) {
+                DependeciLoader.windowsLoadDependecie();
             } else {
-                System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+                throw new RuntimeException("Sistema erabilgarriak soilik Windows eta Linux dira");
+                
             }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+             
 
         EventQueue.invokeLater(new Runnable() {
 
@@ -50,5 +31,8 @@ public class Main {
                 }).start();
             }
         });
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    }
     }
 }

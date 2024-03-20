@@ -19,7 +19,7 @@ RUN cd opencv && \
 
 # Configurar la compilación
 RUN cd opencv/build && \
-    cmake -DBUILD_SHARED_LIBS=ON ..
+    cmake -DBUILD_SHARED_LIBS=ON -DBUILD_JAVA=ON ..
 
 # Compilar e instalar OpenCV
 RUN cd opencv/build && \
