@@ -1,40 +1,44 @@
 package webcam;
 
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.videoio.VideoCapture;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 
-import java.awt.EventQueue;
+import javax.imageio.ImageIO;
+import com.github.sarxos.webcam.Webcam;
 
 public class Camera {
 
     ServerConexion serverConexion = new ServerConexion();
 
-    private VideoCapture capture;
-    private Mat image;
-
-    /**
-     * Metodo honek kamera bat hasi eta irudiak bidaltzen ditu tcp bidez
-     */
     public void startCamera() {
-        capture = new VideoCapture(0);
-        image = new Mat();
+        try {
+            
+            // Obtén la cámara predeterminada
+            Webcam webcam = Webcam.getDefault();
 
-        while (true) {
-            // read image to matrix
-            capture.read(image);
-
-            // convert matrix to byte array
-            final MatOfByte buf = new MatOfByte();
-            Imgcodecs.imencode(".jpg", image, buf);
-
-            final byte[] imageData = buf.toArray();
-
-            // send image to server
-            serverConexion.sendImage(imageData);
-
-        }
+            // Abre la cámara
+            webcam.open();
+    
+    
+                while (true) {
+                    // capture frame
+        
+                    // convert frame to buffered image
+                    BufferedImage image = webcam.getImage();
+        
+                    // convert buffered image to byte array
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(image, "jpg", baos);
+                    baos.flush();
+                    byte[] imageData = baos.toByteArray();
+                    baos.close();
+        
+                    // send image to server
+                    serverConexion.sendImage(imageData);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        
     }
-
 }

@@ -9,15 +9,12 @@ import java.net.Socket;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class ServerControler {
 
     final int SERVER_PORT = 8888;
-
-    private boolean cliked = false;
 
     private byte[] buffer = new byte[65508];
 
@@ -27,8 +24,6 @@ public class ServerControler {
 
     private JLabel cameraScreen;
 
-    private JButton btnCapture;
-
     public ServerControler() {
 
         frame.setLayout(null);
@@ -37,13 +32,6 @@ public class ServerControler {
         cameraScreen.setBounds(0, 0, 640, 480);
         frame.add(cameraScreen);
 
-        btnCapture = new JButton("Capture");
-        btnCapture.setBounds(300, 480, 80, 40);
-        frame.add(btnCapture);
-
-        btnCapture.addActionListener(e -> {
-            cliked = true;
-        });
 
         frame.setSize(640, 560);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
